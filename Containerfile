@@ -58,6 +58,11 @@ RUN pacman -S \
         lib32-pipewire-jack \
         lib32-libpulse \
         lib32-openal \
+        --noconfirm && \
+    pacman -S \
+        codec2 \
+        festival \
+        hamlib \
         --noconfirm
 
 # Add paru and install AUR packages
@@ -67,7 +72,55 @@ RUN git clone https://aur.archlinux.org/paru-bin.git --single-branch && \
     cd paru-bin && \
     makepkg -si --noconfirm && \
     cd .. && \
-    rm -drf paru-bin
+    rm -drf paru-bin && \
+    paru -S \
+        aldo \
+        aprx \
+        ax25-apps \
+        ax25-tools \
+        cqrlog-bin \
+        chirp-next \
+        cty \
+        cutecw \
+        cwirc \
+        dxcc \
+        ebook2cw \
+        fdlog \
+        fldigi \
+        flrig \
+        freedv \
+        gmfsk \
+        gpredict \
+        gtkmmorse \
+        hamclock \
+        hamsolar \
+        klog \
+        kochmorse \
+        libax25 \
+        libfap \
+        linpsk \
+        linrad \
+        node \
+        owx \
+        qle \
+        qrq \
+        qsstv \
+        quisk \
+        sdrpp \
+        soundmodem \
+        splat \
+        sunclock \
+        trustedqsl \
+        unixcw \
+        wsjtx \
+        xastir \
+        xdx \
+        xlog \
+        xnec2c \
+        xpsk31 \
+        yfklog \
+        yfktest \
+        --noconfirm
 USER root
 WORKDIR /
 
