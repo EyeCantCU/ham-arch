@@ -122,8 +122,6 @@ RUN zypper -n in \
     rtl-sdr \
     rtl-sdr-udev \
     shapelib \
-    soft66 \
-    soft66-udev \
     soundmodem \
     soundmodemconfig \
     splat \
