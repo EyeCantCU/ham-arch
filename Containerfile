@@ -58,16 +58,7 @@ RUN pacman -S \
         lib32-pipewire-jack \
         lib32-libpulse \
         lib32-openal \
-        --noconfirm && \
-    pacman -S \
-        steam \
-        lutris \
-        lutris-wine-git \
-        latencyflex \
-        vkbasalt \
-        lib32-vkbasalt \
         --noconfirm
-        # Steam/Lutris/Wine installed separately so they use the dependencies above and don't try to install their own.
 
 # Add paru and install AUR packages
 USER build
@@ -76,12 +67,7 @@ RUN git clone https://aur.archlinux.org/paru-bin.git --single-branch && \
     cd paru-bin && \
     makepkg -si --noconfirm && \
     cd .. && \
-    rm -drf paru-bin && \
-    paru -S \
-        aur/protontricks \
-        aur/mangohud \
-        aur/lib32-mangohud \
-        --noconfirm
+    rm -drf paru-bin
 USER root
 WORKDIR /
 
