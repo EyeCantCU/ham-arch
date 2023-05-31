@@ -37,7 +37,6 @@ RUN zypper -n in  \
 # Ham Radio software
 RUN zypper -n in \
     7plus \
-    HamFax \
     acfax \
     aldo \
     as296-tty \
