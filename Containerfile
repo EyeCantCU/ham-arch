@@ -1,39 +1,20 @@
-FROM docker.io/library/archlinux:latest
+FROM opensuse/tumbleweed
 
-COPY etc /etc
-
-# Pacman Initialization
-RUN sed -i 's/#Color/Color/g' /etc/pacman.conf && \
-    printf "[multilib]\nInclude = /etc/pacman.d/mirrorlist\n" | tee -a /etc/pacman.conf && \
-    sed -i 's/#MAKEFLAGS="-j2"/MAKEFLAGS="-j$(nproc)"/g' /etc/makepkg.conf && \
-    pacman-key --init && \
-    pacman-key --populate archlinux && \
-    pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com && \
-    pacman-key --lsign-key FBA220DFC880C036 && \
-    pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst' --noconfirm && \
-    printf "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n" | tee -a /etc/pacman.conf && \
-    pacman -Syu --noconfirm && \
-    pacman -S \
-        wget \
-        base-devel \
+# Zypper Initialization
+RUN zypper --gpg-auto-import-keys ar -cfp 90 https://ftp.fau.de/packman/suse/openSUSE_Tumbleweed/ packman && \
+    zypper --gpg-auto-import-keys ar -f http://download.opensuse.org/repositories/hamradio/openSUSE_Tumbleweed/ hamradio && \
+    zypper --gpg-auto-import-keys ref && \
+    zypper -n dup --from packman --allow-vendor-change && \
+    zypper -n in \
+        desktop-file-utils \
         git \
-        --noconfirm
-
-# Create build user
-RUN useradd -m --shell=/bin/bash build && usermod -L build && \
-    echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+        opi \
+        wget
 
 # Distrobox Integration
-USER build
-WORKDIR /home/build
-RUN git clone https://github.com/KyleGospo/xdg-utils-distrobox-arch.git --single-branch && \
-    cd xdg-utils-distrobox-arch/trunk && \
-    makepkg -si --noconfirm && \
-    cd ../.. && \
-    rm -drf xdg-utils-distrobox-arch
-USER root
-WORKDIR /
+WORKDIR /tmp
+RUN wget https://download.copr.fedorainfracloud.org/results/eyecantcu/distrobox-utils/opensuse-tumbleweed-x86_64/05991983-xdg-utils-distrobox/xdg-utils-distrobox-1.1.3-13.suse.tw.noarch.rpm && \
+    rpm -i ./xdg-utils-distrobox-1.1.3-13.suse.tw.noarch.rpm
 RUN git clone https://github.com/89luca89/distrobox.git --single-branch && \
     cp distrobox/distrobox-host-exec /usr/bin/distrobox-host-exec && \
     ln -s /usr/bin/distrobox-host-exec /usr/bin/flatpak && \
@@ -42,97 +23,17 @@ RUN git clone https://github.com/89luca89/distrobox.git --single-branch && \
     cp distrobox/host-spawn /usr/bin/host-spawn && \
     chmod +x /usr/bin/host-spawn && \
     rm -drf distrobox
-
-# Install needed packages
-RUN pacman -S \
-        vulkan-radeon \
-        lib32-vulkan-radeon \
-        libva-mesa-driver \
-        intel-media-driver \
-        openal \
-        pipewire \
-        pipewire-pulse \
-        pipewire-alsa \
-        pipewire-jack \
-        lib32-pipewire \
-        lib32-pipewire-jack \
-        lib32-libpulse \
-        lib32-openal \
-        --noconfirm && \
-    pacman -S \
-        codec2 \
-        festival \
-        hamlib \
-        --noconfirm
-
-# Add paru and install AUR packages
-USER build
-WORKDIR /home/build
-RUN git clone https://aur.archlinux.org/paru-bin.git --single-branch && \
-    cd paru-bin && \
-    makepkg -si --noconfirm && \
-    cd .. && \
-    rm -drf paru-bin && \
-    paru -S \
-        aldo \
-        aprx \
-        ax25-apps \
-        ax25-tools \
-        cqrlog-bin \
-        chirp-next \
-        cty \
-        cutecw \
-        cwirc \
-        dxcc \
-        ebook2cw \
-        fdlog \
-        fldigi \
-        flrig \
-        freedv \
-        gmfsk \
-        gpredict \
-        gtkmmorse \
-        hamclock \
-        hamsolar \
-        klog \
-        kochmorse \
-        libax25 \
-        libfap \
-        linpsk \
-        linrad \
-        node \
-        owx \
-        qle \
-        qrq \
-        qsstv \
-        quisk \
-        sdrpp \
-        soundmodem \
-        splat \
-        sunclock \
-        trustedqsl \
-        unixcw \
-        wsjtx \
-        xastir \
-        xdx \
-        xlog \
-        xnec2c \
-        xpsk31 \
-        yfklog \
-        yfktest \
-        --noconfirm
-USER root
 WORKDIR /
 
-# Native march & tune. This is a gaming image and not something a user is going to compile things in with the intent to share.
-# We do this last because it'll only apply to updates the user makes going forward. We don't want to optimize for the build host's environment.
-RUN sed -i 's/-march=x86-64 -mtune=generic/-march=native -mtune=native/g' /etc/makepkg.conf
+# Install needed packages
+RUN zypper -n in  \
+    libvulkan_radeon \
+    intel-media-driver \
+    pipewire \
+    pipewire-pulseaudio \
+    pipewire-alsa \
+    pipewire-aptx
 
 # Cleanup
-RUN userdel -r build && \
-    rm -drf /home/build && \
-    sed -i '/build ALL=(ALL) NOPASSWD: ALL/d' /etc/sudoers && \
-    sed -i '/root ALL=(ALL) NOPASSWD: ALL/d' /etc/sudoers && \
-    rm -rf \
-        /tmp/* \
-	/var/cache/pacman/pkg/*
+RUN zypper -n clean && \
+    rm -rf /tmp/*
