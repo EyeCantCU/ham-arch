@@ -38,10 +38,8 @@ RUN zypper -n in  \
 RUN zypper -n in \
     7plus \
     HamFax \
-    QtRadio \
     acfax \
     aldo \
-    aprsd \
     as296-tty \
     atpdec \
     ax25-apps \
@@ -56,8 +54,6 @@ RUN zypper -n in \
     cwstudio \
     demorse \
     digi_ned \
-    direwolf \
-    dream \
     dxc \
     flaa \
     flamp \
@@ -73,9 +69,7 @@ RUN zypper -n in \
     flwrap \
     fpc \
     funcube-udev \
-    ghpsdr3-alex \
     glfer \
-    gmfsk \
     gnuradio \
     gpsman \
     gqrx \
@@ -86,9 +80,7 @@ RUN zypper -n in \
     ibp \
     js8call \
     jtdx \
-    kamplus \
     klog \
-    kptc \
     kvasd-installer \
     libasync1_6 \
     libax25 \
@@ -97,7 +89,6 @@ RUN zypper -n in \
     libcw6 \
     libecholib1_3 \
     libflxmlrpc1 \
-    libgnuradio-3_10_2 \
     libgnuradio-funcube3_10_0 \
     libgnuradio-osmosdr0_2_0 \
     libhamlib++4 \
@@ -106,12 +97,10 @@ RUN zypper -n in \
     libperseus-sdr0 \
     librtlsdr0 \
     libshp2 \
-    libsoft66-1 \
     libspatialite7 \
     libuhd4_4_0 \
     libxforms2 \
     libzia-4_34 \
-    linkt \
     lua-Hamliblua \
     minimuf \
     mod_spatialite \
@@ -151,9 +140,7 @@ RUN zypper -n in \
     uhd-utils \
     unixcw \
     vlfrx-tools \
-    wsjt \
     wsjtx \
-    wspr \
     wxapt \
     xastir \
     xdemorse \
@@ -161,7 +148,6 @@ RUN zypper -n in \
     xfhell \
     xforms \
     xlog \
-    xoscope \
     xsmc-calc \
     xwxapt \
     yagiuda \
