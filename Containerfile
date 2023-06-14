@@ -46,6 +46,7 @@ RUN zypper -n in \
     ax25spyd \
     axssh \
     axw3 \
+    chirp \
     comedilib \
     conlogv \
     cqrlog \
