@@ -32,7 +32,8 @@ RUN zypper -n in  \
     pipewire \
     pipewire-pulseaudio \
     pipewire-alsa \
-    pipewire-aptx
+    pipewire-aptx \
+    zsh
 
 # Ham Radio software
 RUN zypper -n in \
